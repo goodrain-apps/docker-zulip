@@ -40,9 +40,9 @@ To start the container, you have to use either use `docker-compose` or `kubernet
 
 **Don't forget to configure your `docker-compose.yml` properly!!**
 ### Using docker-compose:
-Change to the root of the source folder and use `docker-compose up`.
+Change to the root of the source folder and run `docker-compose up`.
 ### Using kubernetes:
-Change to the root of the source folder and use `kubectl create -f ./kubernetes/`.
+Change to the root of the source folder and run `kubectl create -f ./kubernetes/`.
 
 ***
 
