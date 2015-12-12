@@ -60,8 +60,6 @@ unset ZULIP_USER_PASSWORD
 # Auto backup settings
 AUTO_BACKUP_ENABLED="${AUTO_BACKUP_ENABLED:-True}"
 AUTO_BACKUP_INTERVAL="${AUTO_BACKUP_INTERVAL:-30 3 * * *}"
-# entrypoint.sh specific variable(s)
-ZPROJECT_SETTINGS="/home/zulip/deployments/current/zproject/settings.py"
 
 # BEGIN appRun functions
 # === initialConfiguration ===
@@ -241,7 +239,7 @@ databaseConfiguration() {
     },
   },
 }"
-    setConfigurationValue "DATABASES" "$VALUE" "$ZPROJECT_SETTINGS" "array"
+    setConfigurationValue "DATABASES" "$VALUE" "/home/zulip/deployments/current/zproject/settings.py" "array"
     sed -i "s~psycopg2.connect\(.*\)~psycopg2.connect(\"host=$DB_HOST port=$DB_HOST_PORT dbname=$DB_NAME user=$DB_USER password=$DB_PASS\")~g" /usr/local/bin/process_fts_updates
     echo "Database configuration succeeded."
 }
@@ -263,7 +261,7 @@ cacheRatelimitConfiguration() {
         }
     },
 }"
-    setConfigurationValue "CACHES" "$VALUE" "$ZPROJECT_SETTINGS" "array"
+    setConfigurationValue "CACHES" "$VALUE" "/home/zulip/deployments/current/zproject/settings.py" "array"
     echo "Caches configuration succeeded."
 }
 authenticationBackends() {
@@ -299,25 +297,25 @@ authenticationBackends() {
 }
 redisConfiguration() {
     echo "Setting redis configuration ..."
-    setConfigurationValue "RATE_LIMITING" "$REDIS_RATE_LIMITING" "$ZPROJECT_SETTINGS" "bool"
-    setConfigurationValue "REDIS_HOST" "$REDIS_HOST" "$ZPROJECT_SETTINGS"
-    setConfigurationValue "REDIS_HOST_PORT" "$REDIS_HOST_PORT" "$ZPROJECT_SETTINGS" "int"
+    setConfigurationValue "RATE_LIMITING" "$REDIS_RATE_LIMITING" "/home/zulip/deployments/current/zproject/settings.py" "bool"
+    setConfigurationValue "REDIS_HOST" "$REDIS_HOST" "/home/zulip/deployments/current/zproject/settings.py"
+    setConfigurationValue "REDIS_HOST_PORT" "$REDIS_HOST_PORT" "/home/zulip/deployments/current/zproject/settings.py" "int"
     echo "Redis configuration succeeded."
 }
 rabbitmqConfiguration() {
     echo "Setting rabbitmq configuration ..."
-    setConfigurationValue "RABBITMQ_HOST" "$RABBITMQ_HOST" "$ZPROJECT_SETTINGS"
+    setConfigurationValue "RABBITMQ_HOST" "$RABBITMQ_HOST" "/home/zulip/deployments/current/zproject/settings.py"
     sed -i "s~pika.ConnectionParameters('localhost',~pika.ConnectionParameters(settings.RABBITMQ_HOST,~g" "/home/zulip/deployments/current/zerver/lib/queue.py"
-    setConfigurationValue "RABBITMQ_USERNAME" "$RABBITMQ_USERNAME" "$ZPROJECT_SETTINGS"
+    setConfigurationValue "RABBITMQ_USERNAME" "$RABBITMQ_USERNAME" "/home/zulip/deployments/current/zproject/settings.py"
     echo "Rabbitmq configuration succeeded."
 }
 camoConfiguration() {
-    setConfigurationValue "CAMO_URI" "$CAMO_URI" "$ZPROJECT_SETTINGS" "emptyreturn"
+    setConfigurationValue "CAMO_URI" "$CAMO_URI" "/home/zulip/deployments/current/zproject/settings.py" "emptyreturn"
 }
 zulipConfiguration() {
     echo "Executing Zulip configuration ..."
     if [ ! -z "$ZULIP_CUSTOM_SETTINGS" ]; then
-        echo -e "\n$ZULIP_CUSTOM_SETTINGS" >> "$ZPROJECT_SETTINGS"
+        echo -e "\n$ZULIP_CUSTOM_SETTINGS" >> "/home/zulip/deployments/current/zproject/settings.py"
     fi
     local SET_SETTINGS=($(env | sed -n -r "s/ZULIP_SETTINGS_([0-9A-Za-z_]*).*/\1/p"))
     for SETTING_KEY in "${SET_SETTINGS[@]}"; do
@@ -327,7 +325,7 @@ zulipConfiguration() {
             echo "Empty var for key \"$SETTING_KEY\"."
             continue
         fi
-        setConfigurationValue "$SETTING_KEY" "$SETTING_VAR" "$ZPROJECT_SETTINGS"
+        setConfigurationValue "$SETTING_KEY" "$SETTING_VAR" "/home/zulip/deployments/current/zproject/settings.py"
     done
     unset SETTING_KEY SETTING_VAR KEY
     if ! su zulip -c "/home/zulip/deployments/current/manage.py checkconfig"; then
