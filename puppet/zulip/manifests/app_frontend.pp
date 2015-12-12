@@ -58,6 +58,9 @@ class zulip::app_frontend {
     "python-imaging",
     # Needed for LDAP support
     "python-django-auth-ldap",
+    "libldap2-dev",
+    "libsasl2-dev",
+    "libssl-dev",
     # Needed for Google Apps mobile auth
     "python-googleapi",
     # Needed for JWT-based auth
