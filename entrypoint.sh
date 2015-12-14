@@ -268,6 +268,7 @@ authenticationBackends() {
     echo "Activating authentication backends ..."
     local FIRST=true
     echo "$ZULIP_AUTH_BACKENDS" | sed -n 1'p' | tr ',' '\n' | while read AUTH_BACKEND; do
+        # TODO Fix the zproject.backends. problem what if it is another module??
         if [ "$FIRST" = true ]; then
             setConfigurationValue "AUTHENTICATION_BACKENDS" "('zproject.backends.${AUTH_BACKEND//\'/\'}',)" "/etc/zulip/settings.py" "array"
             FIRST=false

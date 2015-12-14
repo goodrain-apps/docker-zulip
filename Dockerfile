@@ -30,8 +30,10 @@ RUN wget -qO - https://zulip.com/dist/keys/zulip-ppa.asc | \
     ln -nsf "$ZULIP_DEPLOY_PATH" "/home/zulip/deployments/current" && \
     ln -nsf /etc/zulip/settings.py "$ZULIP_DEPLOY_PATH/zproject/local_settings.py" && \
     wget -q https://www.zulip.com/dist/releases/zulip-server-latest.tar.gz -O /tmp/zulip-server.tar.gz && \
-    tar xfz /tmp/zulip-server.tar.gz -C "/home/zulip/prod-static" --strip-components=3 --wildcards */prod-static/serve && \
+    mkdir -p "/home/zulip/deployments/current/prod-static" && \
+    tar xfz /tmp/zulip-server.tar.gz -C "/home/zulip/deployments/current/prod-static" --strip-components=3 --wildcards */prod-static/* && \
     rm -rf /tmp/zulip-server.tar.gz && \
+    ln -nsf "/home/zulip/deployments/current/prod-static/serve" "/home/zulip/prod-static" && \
     chown -R zulip:zulip /home/zulip /var/log/zulip /etc/zulip/settings.py && \
     apt-get -qq autoremove --purge -y && \
     apt-get -qq clean && \
