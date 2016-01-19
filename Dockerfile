@@ -1,4 +1,4 @@
-FROM quay.io/sameersbn/ubuntu:latest
+FROM goodrain.me/ubuntu:122401
 MAINTAINER Alexander Trost <galexrt@googlemail.com>
 
 ENV ZULIP_VERSION="1.3.9" DATA_DIR="/data"
