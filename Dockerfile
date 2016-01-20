@@ -39,7 +39,7 @@ RUN wget -qO - https://zulip.com/dist/keys/zulip-ppa.asc | \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 VOLUME ["$DATA_DIR"]
-EXPOSE 80 443
+EXPOSE 80
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["app:run"]
